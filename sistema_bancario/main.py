@@ -93,7 +93,13 @@ def criar_conta(cpf):
     }
     contas.append(dados)
  
-def area_logada():
+def area_logada(cpf):
+    cnt_logada = []
+    for conta in contas:
+        if conta['usuario'] == cpf:
+            cnt_logada.append(conta)
+           
+    print(f"conta logada: {cnt_logada}")
     
 
   
