@@ -69,7 +69,10 @@
 # usuarios = []
 # contas = []
 usuarios = [{'nome': 'aaa', 'cpf': '111', 'dt_nasc': '123123123', 'logr': 'asdasd, dsdsdsdsd - asdasdasdasdasd - dddddd / dd'}]
-contas = [{'n_ agendcia': '0001', 'n_conta': 1, 'usuario': 'aaa'}]
+contas = [
+    {'n_agendcia': '0001', 'n_conta': 1, 'usuario': '111', 'saldo': 0, 'limite': 500, 'extrato': '', 'numero_saques': 0, 'LIMITE_SAQUES': 3},
+    {'n_agendcia': '0001', 'n_conta': 2, 'usuario': '111', 'saldo': 0, 'limite': 500, 'extrato': '', 'numero_saques': 0, 'LIMITE_SAQUES': 3},
+    ]
 
 def criar_usuario(dados):
     print("Usuário cadastrado!")
@@ -82,7 +85,7 @@ def criar_conta(cpf):
         index += 1
     
     dados = {
-        "n_ agendcia": "0001",
+        "n_agendcia": "0001",
         "n_conta":index,
         "usuario": cpf,
         "saldo": 0,
@@ -97,9 +100,25 @@ def area_logada(cpf):
     cnt_logada = []
     for conta in contas:
         if conta['usuario'] == cpf:
-            cnt_logada.append(conta)
+            cnt_logada.append(conta) 
            
-    print(f"conta logada: {cnt_logada}")
+    for i, conta in enumerate(cnt_logada):
+        print(f"[{i}]: nº da conta:{conta["n_conta"]} | CPF: {conta["usuario"]}")
+
+    acs_conta = int(input("Selecione a conta que desenja acessar. (Ex.: 3) : "))
+    cnt_acessada = contas[acs_conta]
+    
+    print("========* Conta acessada *==========")
+    print(f"nº da conta:{cnt_acessada["n_conta"]} | CPF: {cnt_acessada["usuario"]}")
+    
+    act = input("""[d] Depositar
+[s] Sacar
+[e] Extrato
+[q] Sair
+
+Selecione a ação desejada:""")
+    
+    # print(f"conta logada: {cnt_logada}")
     
 
   
@@ -110,8 +129,9 @@ def acesso():
     for usuario in usuarios:
         if info == usuario['cpf']:
             print("==========================")
-            area_logada()
+            area_logada(info)
         else:
+            
             print("\n==========================")
             print("Cpf informado, não encontrado, tente novamente!")
             acesso()   
@@ -150,6 +170,11 @@ Deseja criar uma conta? [s/n]: """)
         case "c":
             guarda_dados()
 
+        case _:
+            print("=======================================")
+            print("Resposta inesperada, tente novamente!.")
+            menu()
+
 def guarda_dados():
     print ("============* Criar Conta *===============")
     print ("Informe seus dados:")
@@ -185,7 +210,7 @@ def guarda_dados():
 def main():
     menu()
 
-    print(usuarios)
-    print(contas)
+    # print(usuarios)
+    # print(contas)
     
 main()
