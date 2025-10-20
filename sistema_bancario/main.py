@@ -4,7 +4,7 @@
 usuarios = [{'nome': 'aaa', 'cpf': '111', 'dt_nasc': '123123123', 'logr': 'asdasd, dsdsdsdsd - asdasdasdasdasd - dddddd / dd'}]
 contas = [
     {'n_agendcia': '0001', 'n_conta': 1, 'usuario': '111', 'saldo': 0, 'limite': 500, 'extrato': '', 'numero_saques': 0, 'LIMITE_SAQUES': 3},
-    {'n_agendcia': '0001', 'n_conta': 2, 'usuario': '111', 'saldo': 0, 'limite': 500, 'extrato': '', 'numero_saques': 0, 'LIMITE_SAQUES': 3},
+    {'n_agendcia': '0001', 'n_conta': 2, 'usuario': '111', 'saldo': 100.0, 'limite': 500, 'extrato': '', 'numero_saques': 0, 'LIMITE_SAQUES': 3},
     ]
 
 def criar_usuario(dados):
@@ -31,21 +31,21 @@ def criar_conta(cpf):
  
 def area_logada(cpf):
     cnt_logada = []
-    cnt_op ={}
+    # cnt_op ={}
     for conta in contas:
         if conta['usuario'] == cpf:
             cnt_logada.append(conta) 
-            cnt_op = conta
+            # cnt_op = conta
 
     for i, conta in enumerate(cnt_logada):
         print(f"[{i}]: nº da conta:{conta['n_conta']} | CPF: {conta['usuario']}")
 
-    area_operacao(cnt_op)
+    acs_conta = int(input("Selecione a conta que desenja acessar. (Ex.: 3) : "))
+    cnt_acessada = contas[acs_conta]
+    area_operacao(cnt_acessada)
     
 
 def area_operacao(cnt_acessada):
-    acs_conta = int(input("Selecione a conta que desenja acessar. (Ex.: 3) : "))
-    cnt_acessada = contas[acs_conta]
     
     print("========* Conta acessada *==========")
     print(f"nº da conta:{cnt_acessada["n_conta"]} | CPF: {cnt_acessada["usuario"]}")
@@ -63,16 +63,59 @@ Selecione a ação desejada:""")
             valor = float(input("Informe o valor: R$ "))
             dep = depositar(cnt_acessada, valor)
             print(f"\n Novo saldo: {dep}")
-            print(f"\n conta: {cnt_acessada}")
+            # print(f"\n conta: {cnt_acessada}")
+            area_operacao(cnt_acessada)
 
-def depositar(dados, valor_dep,/):
+        case "s":
+            print("========* Saque *==========")
+            valor = float(input("Informe o valor: R$ "))
+            saque, saldo = sacar(val=valor, conta=cnt_acessada)
+            print(f'valor sacado: R${saque} | Saldo atual: R$ {saldo}')
+            area_operacao(cnt_acessada)
+            
+        case "e":
+            print("========* Extrato *==========")
+            ext = extrato(cnt_acessada['extrato'], conta= cnt_acessada )
+            print(ext)
+            area_operacao(cnt_acessada)
+
+            
+def depositar(dados, valor_dep):
     
     
     dados['saldo'] += valor_dep
     print(f"dados em depositar: {dados}")
+    return dados['saldo']
 
+def sacar(val, conta):
+    excedeu_saldo = val > conta['saldo']
+    excedeu_limite = val >conta['limite']
+    excedeu_saques = conta['numero_saques'] >= conta['LIMITE_SAQUES']
 
+    if excedeu_saldo:
+        print("Operação falhou! Você não tem saldo suficiente.")
+
+    elif excedeu_limite:
+        print("Operação falhou! O valor do saque excede o limite.")
+
+    elif excedeu_saques:
+        print("Operação falhou! Número máximo de saques excedido.")
+
+    elif val > 0:
+        conta['saldo'] -= val
+        # extrato += f"Saque: R$ {valor:.2f}\n"
+        conta['numero_saques'] += 1
+        return val, conta['saldo']
+
+    else:
+        print("Operação falhou! O valor informado é inválido.")
  
+def extrato(ext, /, **conta):
+    # print(ext, conta)
+    # dados = 
+    ext = f"nº da conta: {conta['conta']['n_conta']}|saldo atual: R$ {conta['conta']['saldo']} | "
+    return ext
+
 def acesso():
     print("========* Acesso a conta *========")
     info = input("Informe o CPF:")  
